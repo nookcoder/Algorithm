@@ -1,45 +1,41 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 class Main {
-  public static void main(final String[] args) {
-    int N, K, w, v; 
-    int[][] dp; 
-    final ArrayList<Integer> W = new ArrayList<>(); 
-    final ArrayList<Integer> V = new ArrayList<>(); 
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int[] dp;
+    StringTokenizer st;
 
-    // input values 
-    final Scanner scanner = new Scanner(System.in);
-    N = scanner.nextInt();
-    K = scanner.nextInt();
-    dp = new int[N][K+1];
+    int N, K;
+    st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    K = Integer.parseInt(st.nextToken());
+    dp = new int[K+1];
 
-    // Big-O = O(1)
     for(int i=0; i<N; i++) {
-      w = scanner.nextInt(); 
-      v = scanner.nextInt(); 
-      W.add(w); 
-      V.add(v); 
-    }
+      st = new StringTokenizer(br.readLine());
+      int n = Integer.parseInt(st.nextToken()); // 무게
+      int k = Integer.parseInt(st.nextToken()); // 가치
+      if(n > K) {
+        continue;
+      }
+      if(dp[K] < k) {
+        dp[K] = k;
+      }
 
-    // initialize dp Big-O = O(K+1 * N) 10,000,000
-    for(int i=1; i<K+1; i++) {
-      for(int j=0; j<N; j++) {
-        final int a = W.get(j); 
-        if(i == a) {
-          dp[j][i] = V.get(j);
+      for(int j=K; j>n; j--) {
+        if(dp[j-n] != 0 && dp[j] < dp[j-n] + k) {
+          dp[j] = dp[j-n] + k;
+          if(dp[K] < dp[j]) {
+            dp[K] = dp[j];
+          }
         }
       }
-    }
-
-
-
-    for(int i=0; i<N; i++) {
-      for(int k=1; k<K+1; k++) {
-        System.out.print(dp[i][k] + " ");
+      if(dp[n] < k) {
+        dp[n] = k;
       }
-      System.out.println("");
     }
- }
+    System.out.println(dp[K]);
+  }
 }
